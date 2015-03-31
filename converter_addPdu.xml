@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BitXml>
+	<APP>IxNetwork</APP>
+	<TYPE>OBJECT</TYPE>
+	<TCLLIB>converter.tcl</TCLLIB>
+	<stack CMD="HeaderCreater header.@parent.parent.name"
+			FILTER="@displayName {Ethernet II}">
+	</stack>
+	<stack CMD="header.@parent.parent.name CreateEthHeader" 
+			FILTER="@displayName {Ethernet II}">
+		<ARGS>
+			<Name CMD="-PduName">[GetPduNameByStack @handle]</Name>
+			<DA CMD="-DA" 
+				FILTER="@name destinationAddress">[GetFieldValue @field.handle]</DA>
+			<DA_TYPE CMD="-daRepeatCounter"
+				FILTER="@name destinationAddress">[GetFieldType @field.valueType]</DA_TYPE>
+			<DA_STEP CMD="-daStep"
+				FILTER="@name destinationAddress"
+				CONDITION="@field.valueType increment|decrement">@field.stepValue</DA_STEP>
+			<DA_NUM CMD="-numDa"
+				FILTER="@name destinationAddress">@field.countValue</DA_NUM>
+			<SA CMD="-SA" 
+				FILTER="@name sourceAddress">[GetFieldValue @field.handle]</SA>
+			<SA_TYPE CMD="-saRepeatCounter"
+				FILTER="@name sourceAddress">[GetFieldType @field.valueType]</SA_TYPE>
+			<SA_STEP CMD="-saStep"
+				FILTER="@name sourceAddress"
+				CONDITION="@field.valueType increment|decrement">@field.stepValue</SA_STEP>
+			<SA_NUM CMD="-numSa"
+				FILTER="@name sourceAddress"
+				CONDITION="@field.valueType increment|decrement">@field.countValue</SA_NUM>
+			<ETHTYPE CMD="-EthType"
+				FILTER="@name ether_type">[GetFieldValue @field.handle]</ETHTYPE>
+			<ETHTYPE_MODE CMD="-EthTypeMode"
+				FILTER="@name ether_type">[GetFieldType @field.valueType]</ETHTYPE_MODE>
+			<ETHTYPE_STEP CMD="-EthTypeStep"
+				FILTER="@name ether_type"
+				CONDITION="@field.valueType increment|decrement">@field.stepValue</ETHTYPE_STEP>
+			<ETHTYPE_COUNT CMD="-EthTypeCount"
+				FILTER="@name ether_type"
+				CONDITION="@field.valueType increment|decrement">@field.countValue</ETHTYPE_COUNT>
+		</ARGS>
+	</stack>
+	<stack CMD="HeaderCreater header.@parent.parent.name"
+			FILTER="@displayName VLAN">
+	</stack>
+	<stack CMD="header.@parent.parent.name CreateVlanHeader"
+			FILTER="@displayName VLAN">
+		<ARGS>
+			<Name CMD="-PduName">[GetPduNameByStack @handle]</Name>
+			<ID CMD="-vlanID" FILTER="@name vlan_id">@field.singleValue</ID>
+			<PRI CMD="-userPriority" FILTER="@name vlan_user_priority">@field.singleValue</PRI>
+			<CFI CMD="-cfi" FILTER="@name vlan_cfi">@field.singleValue</CFI>
+			<MTAG CMD="-Vlanstack">[GetVlanMultipleTag @handle]</MTAG>
+			<LVL CMD="-Stack">[GetObjectIndex @handle stack]</LVL>
+		</ARGS>
+	</stack>
+	<stack CMD="PacketBuild header.@parent.parent.name"
+			FILTER="@displayName Custom">
+	</stack>
+	<stack CMD="header.@parent.parent.name CreateCustomPkt"
+			FILTER="@displayName Custom"
+			DISC="header.[GetTrafficNameByStack @handle]创建CustomPacket">
+		<ARGS>
+			<Name CMD="-PduName">[GetPduNameByStack @handle]</Name>
+			<Hex_String CMD="-HexString" FILTER="@name Data">@field.fieldValue</Hex_String>
+		</ARGS>
+	</stack>
+	<trafficItem CMD="@name AddPdu">
+		<ARGS>
+			<Pdu CMD="-PduName">[GetTrafficPdu @handle]</Pdu>
+		</ARGS>
+	</trafficItem>
+</BitXml>

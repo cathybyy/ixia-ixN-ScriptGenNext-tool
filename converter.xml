@@ -1,0 +1,1151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BitXml>
+	<APP>IxNetwork</APP>
+	<TYPE>OBJECT</TYPE>
+	<TCLLIB>converter.tcl</TCLLIB>
+	<vport CMD="$@name CreateStaEngine"
+			DISC="创建统计引擎:">
+		<ARGS>
+			<Name CMD="-StaEngineName"
+			DISC="统计引擎名称=">stats.@name</Name>
+			<Type CMD="-StaType"
+			DISC="统计引擎类型=">Statistics</Type>
+		</ARGS>
+	</vport>
+	<vport CMD="$@name CreateTraffic"
+			DISC="端口@name 下创建流量引擎">
+		<ARGS>
+			<Name CMD="-TrafficName"
+				DISC="对象名=">traffic.@name</Name>
+		</ARGS>
+	</vport>
+	<trafficItem CMD="traffic.[GetAttribute @highLevelStream.txPortId -name] CreateProfile"
+				DISC="流量引擎 traffic.[GetAttribute @highLevelStream.txPortId -name] 下创建流量模型:">
+		<ARGS>
+			<Name CMD="-Name"
+				DISC="对象名=">profile.@name</Name>
+			<Type CMD="-Type"
+				DISC="类型=">[GetProfileType @highLevelStream.transmissionControl.type]</Type>
+			<Load CMD="-TrafficLoad"
+				DISC="速率=">@highLevelStream.frameRate.rate</Load>
+			<Unit CMD="-TrafficLoadUnit"
+				DISC="速率单位=">[GetTrafficLoadUnit @highLevelStream.frameRate.type]</Unit>
+		</ARGS>
+	</trafficItem>
+	<trafficItem CMD="traffic.[GetAttribute @highLevelStream.txPortId -name] CreateStream"
+				DISC="流量引擎 traffic.[GetAttribute @highLevelStream.txPortId -name] 下创建流量:">
+		<ARGS>
+			<Name CMD="-StreamName"
+				DISC="对象名=">stream.@name</Name>
+			<Profile CMD="-ProfileName"
+				DISC="流量模型=">profile.@name</Profile>
+			<FrameLength CMD="-framelen"
+				DISC="帧长=">@highLevelStream.frameSize.fixedSize</FrameLength>
+			<L2 CMD="-L2"
+				DISC="二层帧=">[GetL2StackName @highLevelStream.handle]</L2>
+			<ETH_DA CMD="-EthDst"
+				DISC="Ethernet目的地址=">[GetFieldValue @highLevelStream.stack(displayName={Ethernet II}).field(name=destinationAddress).handle]</ETH_DA>
+			<ETH_DA_MODE CMD="-EthDstMode"
+				DISC="Ethernet目的地址字段类型=">[GetFieldType @highLevelStream.stack(displayName={Ethernet II}).field(name=destinationAddress).valueType]</ETH_DA_MODE>
+			<ETH_DA_COUNT CMD="-EthDstCount"
+				DISC="Ethernet目的地址数量=">@highLevelStream.stack(displayName={Ethernet II}).field(name=destinationAddress).countValue</ETH_DA_COUNT>
+			<ETH_DA_STEP CMD="-EthDstStep"
+				CONDITION="@highLevelStream.stack(displayName={Ethernet II}).field(name=destinationAddress).valueType increment|decrement"
+				DISC="Ethernet目的地址步长=">@highLevelStream.stack(displayName={Ethernet II}).field(name=destinationAddress).stepValue</ETH_DA_STEP>
+			<ETH_SA CMD="-EthSrc"
+				DISC="Ethernet源地址=">[GetFieldValue @highLevelStream.stack(displayName={Ethernet II}).field(name=sourceAddress).handle]</ETH_SA>
+			<ETH_SA_MODE CMD="-EthSrcMode"
+				DISC="Ethernet源地址类型=">[GetFieldType @highLevelStream.stack(displayName={Ethernet II}).field(name=sourceAddress).valueType]</ETH_SA_MODE>
+			<ETH_SA_COUNT CMD="-EthSrcCount"
+				DISC="Ethernet源地址数量=">@highLevelStream.stack(displayName={Ethernet II}).field(name=sourceAddress).countValue</ETH_SA_COUNT>
+			<ETH_SA_STEP CMD="-EthSrcStep"
+				CONDITION="@highLevelStream.stack(displayName={Ethernet II}).field(name=sourceAddress).valueType increment|decrement"
+				DISC="Ethernet源地址步长=">@highLevelStream.stack(displayName={Ethernet II}).field(name=sourceAddress).stepValue</ETH_SA_STEP>
+			<ETH_TYPE CMD="-EthType"
+				DISC="Ethernet类型=">0x[GetFieldValue @highLevelStream.stack(displayName={Ethernet II}).field(name=ether_type).handle]</ETH_TYPE>
+			<ETH_TYPE_MODE CMD="-EthTypeMode"
+				DISC="Ethernet类型字段类型=">[GetFieldType @highLevelStream.stack(displayName={Ethernet II}).field(name=ether_type).valueType]</ETH_TYPE_MODE>
+			<ETH_TYPE_COUNT CMD="-EthTypeCount"
+				DISC="Ethernet类型字段数量=">@highLevelStream.stack(displayName={Ethernet II}).field(name=ether_type).countValue</ETH_TYPE_COUNT>
+			<ETH_TYPE_STEP CMD="-EthTypeStep"
+				CONDITION="@highLevelStream.stack(displayName={Ethernet II}).field(name=ether_type).valueType increment|decrement"
+				DISC="Ethernet类型步长=">@highLevelStream.stack(displayName={Ethernet II}).field(name=ether_type).stepValue</ETH_TYPE_STEP>
+			<VLAN_ID CMD="-VlanId"
+				DISC="VLAN ID=">[GetFieldValue @highLevelStream.stack(displayName=VLAN).field(name=vlan_id).handle]</VLAN_ID>
+			<VLAN_ID_MODE CMD="-VlanIdMode"
+				DISC="VLAN ID字段类型=">[GetFieldType @highLevelStream.stack(displayName=VLAN).field(name=vlan_id).valueType]</VLAN_ID_MODE>
+			<VLAN_ID_COUNT CMD="-VlanIdCount"
+				DISC="VLAN ID数量=">@highLevelStream.stack(displayName=VLAN).field(name=vlan_id).countValue</VLAN_ID_COUNT>
+			<VLAN_ID_STEP CMD="-VlanIdStep"
+				CONDITION="@highLevelStream.stack(displayName=VLAN).field(name=vlan_id).valueType increment|decrement"
+				DISC="VLAN ID步长=">@highLevelStream.stack(displayName=VLAN).field(name=vlan_id).stepValue</VLAN_ID_STEP>
+			<VLAN_ID2 CMD="-VlanId2"
+				DISC="QinQ VLAN ID=">[GetFieldValue @highLevelStream.stack(displayName=VLAN,1).field(name=vlan_id).handle]</VLAN_ID2>
+			<VLAN_ID2_MODE CMD="-VlanIdMode2"
+				DISC="QinQ VLAN ID字段类型=">[GetFieldType @highLevelStream.stack(displayName=VLAN,1).field(name=vlan_id).valueType]</VLAN_ID2_MODE>
+			<VLAN_ID2_COUNT CMD="-VlanIdCount2"
+				DISC="QinQ VLAN ID数量=">@highLevelStream.stack(displayName=VLAN,1).field(name=vlan_id).countValue</VLAN_ID2_COUNT>
+			<VLAN_ID2_STEP CMD="-VlanIdStep2"
+				CONDITION="@highLevelStream.stack(displayName=VLAN,1).field(name=vlan_id).valueType increment|decrement"
+				DISC="QinQ VLAN ID步长=">@highLevelStream.stack(displayName=VLAN,1).field(name=vlan_id).stepValue</VLAN_ID2_STEP>
+			<VLAN_PRI CMD="-VlanUserPriority"
+				DISC="VLAN 优先级=">[GetFieldValue @highLevelStream.stack(displayName=VLAN).field(name=vlan_user_priority).handle]</VLAN_PRI>
+			<VLAN_CFI CMD="-VlanCfi"
+				DISC="VLAN CFI=">[GetFieldValue @highLevelStream.stack(displayName=VLAN).field(name=vlan_cfi).handle]</VLAN_CFI>
+			<VLAN_TYPE CMD="-VlanType"
+				DISC="VLAN 类型=">0x[GetFieldValue @highLevelStream.stack(displayName=VLAN).field(name=vlan_tag_type).handle]</VLAN_TYPE>
+			<VLAN_PRI2 CMD="-VlanUserPriority2"
+				DISC="QinQ VLAN 优先级=">[GetFieldValue @highLevelStream.stack(displayName=VLAN,1).field(name=vlan_user_priority).handle]</VLAN_PRI2>
+			<VLAN_CFI2 CMD="-VlanCfi2"
+				DISC="QinQ VLAN CFI=">[GetFieldValue @highLevelStream.stack(displayName=VLAN,1).field(name=vlan_cfi).handle]</VLAN_CFI2>
+			<VLAN_TYPE2 CMD="-VlanType2"
+				DISC="QinQ VLAN 类型=">0x[GetFieldValue @highLevelStream.stack(displayName=VLAN,1).field(name=vlan_tag_type).handle]</VLAN_TYPE2>
+			<MPLS_LBL CMD="-MplsLabel"
+				DISC="MPLS标签=">[GetFieldValue @highLevelStream.stack(displayName=MPLS).field(name=mpls_label_value).handle]</MPLS_LBL>
+			<MPLS_LBL_MODE CMD="-MplsLabelMode"
+				DISC="MPLS标签字段类型=">[GetFieldType @highLevelStream.stack(displayName=MPLS).field(name=mpls_label_value).valueType]</MPLS_LBL_MODE>
+			<MPLS_LBL_COUNT CMD="-MplsLabelCount"
+				DISC="MPLS标签数量=">@highLevelStream.stack(displayName=MPLS).field(name=mpls_label_value).countValue</MPLS_LBL_COUNT>
+			<MPLS_LBL_STEP CMD="-MplsLabelStep"
+				CONDITION="@highLevelStream.stack(displayName=MPLS).field(name=mpls_label_value).valueType increment|decrement"
+				DISC="MPLS标签步长=">@highLevelStream.stack(displayName=MPLS).field(name=mpls_label_value).stepValue</MPLS_LBL_STEP>
+			<MPLS_BOS CMD="-MplsBottomOfStack"
+				DISC="MPLS BOS=">[GetFieldValue @highLevelStream.stack(displayName=MPLS).field(name=mpls_bos).handle]</MPLS_BOS>
+			<MPLS_EXP CMD="-MplsExp"
+				DISC="MPLS EXP=">[GetFieldValue @highLevelStream.stack(displayName=MPLS).field(name=mpls_exp).handle]</MPLS_EXP>
+			<MPLS_TTL CMD="-Mplsttl"
+				DISC="MPLS TTL=">[GetFieldValue @highLevelStream.stack(displayName=MPLS).field(name=mpls_ttl).handle]</MPLS_TTL>
+			<MPLS_LBL2 CMD="-MplsLabel2"
+				DISC="2层MPLS标签=">[GetFieldValue @highLevelStream.stack(displayName=MPLS,1).field(name=mpls_label_value).handle]</MPLS_LBL2>
+			<MPLS_LBL_MODE2 CMD="-MplsLabelMode2"
+				DISC="2层MPLS标签字段类型=">[GetFieldType @highLevelStream.stack(displayName=MPLS,1).field(name=mpls_label_value).valueType]</MPLS_LBL_MODE2>
+			<MPLS_LBL_COUNT2 CMD="-MplsLabelCount2"
+				DISC="2层MPLS标签数量=">@highLevelStream.stack(displayName=MPLS,1).field(name=mpls_label_value).countValue</MPLS_LBL_COUNT2>
+			<MPLS_LBL_STEP2 CMD="-MplsLabelStep2"
+				CONDITION="@highLevelStream.stack(displayName=MPLS,1).field(name=mpls_label_value).valueType increment|decrement"
+				DISC="2层MPLS标签步长=">@highLevelStream.stack(displayName=MPLS,1).field(name=mpls_label_value).stepValue</MPLS_LBL_STEP2>
+			<MPLS_BOS2 CMD="-MplsBottomOfStack2"
+				DISC="2层MPLS BOS=">[GetFieldValue @highLevelStream.stack(displayName=MPLS,1).field(name=mpls_bos).handle]</MPLS_BOS2>
+			<MPLS_EXP2 CMD="-MplsExp2"
+				DISC="2层MPLS EXP=">[GetFieldValue @highLevelStream.stack(displayName=MPLS,1).field(name=mpls_exp).handle]</MPLS_EXP2>
+			<MPLS_TTL2 CMD="-Mplsttl2"
+				DISC="2层MPLS TTL=">[GetFieldValue @highLevelStream.stack(displayName=MPLS,1).field(name=mpls_ttl).handle]</MPLS_TTL2>
+			<L3 CMD="-L3"
+				DISC="三层帧=">[GetL3StackName @highLevelStream.handle]</L3>
+			<IP_SA CMD="-IpSrcAddr"
+				DISC="IP源地址=">[GetFieldValue @highLevelStream.stack(templateName=ipv4-template.xml).field(name=source_ip).handle]</IP_SA>
+			<IP_SA_MODE CMD="-IpSrcAddrMode"
+				DISC="IP源地址字段类型=">[GetFieldType @highLevelStream.stack(templateName=ipv4-template.xml).field(name=source_ip).valueType]</IP_SA_MODE>
+			<IP_SA_COUNT CMD="-IpSrcAddrCount"
+				DISC="IP源地址数量=">@highLevelStream.stack(templateName=ipv4-template.xml).field(name=source_ip).countValue</IP_SA_COUNT>
+			<IP_SA_STEP CMD="-IpSrcAddrStep"
+				CONDITION="@highLevelStream.stack(templateName=ipv4-template.xml).field(name=source_ip).valueType increment|decrement"
+				DISC="IP源地址步长=">@highLevelStream.stack(templateName=ipv4-template.xml).field(name=source_ip).stepValue</IP_SA_STEP>
+			<IP_SA_MASK CMD="-IpSrcMask"
+				CONDITION="@highLevelStream.stack(templateName=ipv4-template.xml).templateName ipv4-template.xml"
+				DISC="IP源地址掩码=">255.255.255.0</IP_SA_MASK>
+			<IP_DA CMD="-IpDstAddr"
+				DISC="IP目的地址=">[GetFieldValue @highLevelStream.stack(templateName=ipv4-template.xml).field(name=dest_ip).handle]</IP_DA>
+			<IP_DA_MODE CMD="-IpDstAddrMode"
+				DISC="IP目的地址字段类型=">[GetFieldType @highLevelStream.stack(templateName=ipv4-template.xml).field(name=dest_ip).valueType]</IP_DA_MODE>
+			<IP_DA_COUNT CMD="-IpDstAddrCount"
+				DISC="IP目的地址数量=">@highLevelStream.stack(templateName=ipv4-template.xml).field(name=dest_ip).countValue</IP_DA_COUNT>
+			<IP_DA_STEP CMD="-IpDstAddrStep"
+				CONDITION="@highLevelStream.stack(templateName=ipv4-template.xml).field(name=dest_ip).valueType increment|decrement"
+				DISC="IP目的地址步长=">@highLevelStream.stack(templateName=ipv4-template.xml).field(name=dest_ip).stepValue</IP_DA_STEP>
+			<IP_DA_MASK CMD="-IpDstMask"
+				CONDITION="@highLevelStream.stack(templateName=ipv4-template.xml).templateName ipv4-template.xml"
+				DISC="IP目的地址掩码=">255.255.255.0</IP_DA_MASK>
+			<IPV6_SA CMD="-Ipv6SrcAddress"
+				DISC="IPv6源地址=">[GetFieldValue @highLevelStream.stack(templateName=ipv6-template.xml).field(name=source_ip).handle]</IPV6_SA>
+			<IPV6_SA_MODE CMD="-Ipv6SrcAddressMode"
+				DISC="IPv6源地址字段类型=">[GetFieldType @highLevelStream.stack(templateName=ipv6-template.xml).field(name=source_ip).valueType]</IPV6_SA_MODE>
+			<IPV6_SA_COUNT CMD="-Ipv6SrcAddressCount"
+				DISC="IPv6源地址数量=">@highLevelStream.stack(templateName=ipv6-template.xml).field(name=source_ip).countValue</IPV6_SA_COUNT>
+			<IPV6_SA_STEP CMD="-Ipv6SrcAddressStep"
+				CONDITION="@highLevelStream.stack(templateName=ipv6-template.xml).field(name=source_ip).valueType increment|decrement"
+				DISC="IPv6源地址步长=">@highLevelStream.stack(templateName=ipv6-template.xml).field(name=source_ip).stepValue</IPV6_SA_STEP>
+			<IPV6_DA CMD="-Ipv6DstAddress"
+				DISC="IPv6目的地址=">[GetFieldValue @highLevelStream.stack(templateName=ipv6-template.xml).field(name=dest_ip).handle]</IPV6_DA>
+			<IPV6_DA_MODE CMD="-Ipv6DstAddressMode"
+				DISC="IPv6目的地址字段类型=">[GetFieldType @highLevelStream.stack(templateName=ipv6-template.xml).field(name=dest_ip).valueType]</IPV6_DA_MODE>
+			<IPV6_DA_COUNT CMD="-Ipv6DstAddressCount"
+				DISC="IPv6目的地址数量=">@highLevelStream.stack(templateName=ipv6-template.xml).field(name=dest_ip).countValue</IPV6_DA_COUNT>
+			<IPV6_DA_STEP CMD="-Ipv6DstAddressStep"
+				CONDITION="@highLevelStream.stack(templateName=ipv6-template.xml).field(name=dest_ip).valueType increment|decrement"
+				DISC="IPv6目的地址步长=">@highLevelStream.stack(templateName=ipv6-template.xml).field(name=dest_ip).stepValue</IPV6_DA_STEP>
+			<L4 CMD="-L4"
+				DISC="四层帧=">[GetL4StackName @highLevelStream.handle]</L4>
+			<TCP_SP CMD="-TcpSrcPort"
+				DISC="TCP源端口=">[GetFieldValue @highLevelStream.stack(displayName=TCP).field(name=tcp_src_prt).handle]</TCP_SP>
+			<TCP_SP_MODE CMD="-TcpSrcPortMode"
+				DISC="TCP源端口字段类型=">[GetFieldType @highLevelStream.stack(displayName=TCP).field(name=tcp_src_prt).valueType]</TCP_SP_MODE>
+			<TCP_SP_COUNT CMD="-TcpSrcPortCount"
+				DISC="TCP源端口数量=">@highLevelStream.stack(displayName=TCP).field(name=tcp_src_prt).countValue</TCP_SP_COUNT>
+			<TCP_SP_STEP CMD="-TcpSrcPortStep"
+				CONDITION="@highLevelStream.stack(displayName=TCP).field(name=tcp_src_prt).valueType increment|decrement"
+				DISC="TCP源端口步长=">@highLevelStream.stack(displayName=TCP).field(name=tcp_src_prt).stepValue</TCP_SP_STEP>
+			<TCP_DP CMD="-TcpDstPort"
+				DISC="TCP目的端口=">[GetFieldValue @highLevelStream.stack(displayName=TCP).field(name=tcp_dst_prt).handle]</TCP_DP>
+			<TCP_DP_MODE CMD="-TcpDstPortMode"
+				DISC="TCP目的端口字段类型=">[GetFieldType @highLevelStream.stack(displayName=TCP).field(name=tcp_dst_prt).valueType]</TCP_DP_MODE>
+			<TCP_DP_COUNT CMD="-TcpDstPortCount"
+				DISC="TCP目的端口数量=">@highLevelStream.stack(displayName=TCP).field(name=tcp_dst_prt).countValue</TCP_DP_COUNT>
+			<TCP_DP_STEP CMD="-TcpDstPortStep"
+				CONDITION="@highLevelStream.stack(displayName=TCP).field(name=tcp_dst_prt).valueType increment|decrement"
+				DISC="TCP目的端口步长=">@highLevelStream.stack(displayName=TCP).field(name=tcp_dst_prt).stepValue</TCP_DP_STEP>
+			<UDP_SP CMD="-UdpSrcPort"
+				DISC="UDP源端口=">[GetFieldValue @highLevelStream.stack(displayName=UDP).field(name=udp_src_prt).handle]</UDP_SP>
+			<UDP_SP_MODE CMD="-UdpSrcPortMode"
+				DISC="UDP源端口字段类型=">[GetFieldType @highLevelStream.stack(displayName=UDP).field(name=udp_src_prt).valueType]</UDP_SP_MODE>
+			<UDP_SP_COUNT CMD="-UdpSrcPortCount"
+				DISC="UDP源端口数量=">@highLevelStream.stack(displayName=UDP).field(name=udp_src_prt).countValue</UDP_SP_COUNT>
+			<UDP_SP_STEP CMD="-UdpSrcPortStep"
+				CONDITION="@highLevelStream.stack(displayName=UDP).field(name=udp_src_prt).valueType increment|decrement"
+				DISC="UDP源端口步长=">@highLevelStream.stack(displayName=UDP).field(name=udp_src_prt).stepValue</UDP_SP_STEP>
+			<UDP_DP CMD="-UdpDstPort"
+				DISC="UDP目的端口=">[GetFieldValue @highLevelStream.stack(displayName=UDP).field(name=udp_dst_prt).handle]</UDP_DP>
+			<UDP_DP_MODE CMD="-UdpDstPortMode"
+				DISC="UDP目的端口字段类型=">[GetFieldType @highLevelStream.stack(displayName=UDP).field(name=udp_dst_prt).valueType]</UDP_DP_MODE>
+			<UDP_DP_COUNT CMD="-UdpDstPortCount"
+				DISC="UDP目的端口数量=">@highLevelStream.stack(displayName=UDP).field(name=udp_dst_prt).countValue</UDP_DP_COUNT>
+			<UDP_DP_STEP CMD="-UdpDstPortStep"
+				CONDITION="@highLevelStream.stack(displayName=UDP).field(name=udp_dst_prt).valueType increment|decrement"
+				DISC="UDP目的端口步长=">@highLevelStream.stack(displayName=UDP).field(name=udp_dst_prt).stepValue</UDP_DP_STEP>
+			<ARP_SH CMD="-ArpSrcHwAddr"
+				DISC="ARP源硬件地址=">[GetFieldValue @highLevelStream.stack(displayName={Ethernet ARP}).field(name=src_hw_addr).handle]</ARP_SH>
+			<ARP_DH CMD="-ArpDstHwAddr"
+				DISC="ARP目的硬件地址=">[GetFieldValue @highLevelStream.stack(displayName={Ethernet ARP}).field(name=dst_hw_addr).handle]</ARP_DH>
+			<ARP_OP CMD="-ArpOperation"
+				DISC="ARP操作码=">[GetArpOperationCode @highLevelStream.stack(displayName={Ethernet ARP}).field(name=op_code).singleValue]</ARP_OP>
+			<ARP_SP CMD="-ArpSrcProtocolAddr"
+				DISC="ARP源协议地址=">[GetFieldValue @highLevelStream.stack(displayName={Ethernet ARP}).field(name=src_ip).handle]</ARP_SP>
+			<ARP_DP CMD="-ArpDstProtocolAddr"
+				DISC="ARP目的协议地址=">[GetFieldValue @highLevelStream.stack(displayName={Ethernet ARP}).field(name=dst_ip).handle]</ARP_DP>
+			<Custom_Header CMD="-CustomHeader"
+				DISC="Custom字段内容=">0x@highLevelStream.stack(displayName=Custom).field(name=Data).fieldValue</Custom_Header>
+			<ICMP_TYPE CMD="-IcmpType"
+				DISC="ICMP消息类型=">[GetIcmpMsgType @highLevelStream.handle]</ICMP_TYPE>
+			<ICMP_CODE CMD="-IcmpCode"
+				DISC="ICMP消息类型=">[GetIcmpCode @highLevelStream.handle]</ICMP_CODE>
+		</ARGS>
+	</trafficItem>
+	<neighborRange CMD="$[GetNeighborRangeVport @handle] CreateRouter"
+			DISC="创建路由在[GetNeighborRangeVport @handle]下:">
+		<ARGS>
+			<Name CMD="-RouterName"
+			DISC="路由名称=">[GetBgpRouterName @handle]</Name>
+			<Type CMD="-RouterType"
+			DISC="路由类型=">[GetBgpRouterType @interfaces] </Type>
+			<RouterId CMD="-routerid"
+			DISC="路由ID=">@bgpId</RouterId>
+		</ARGS>
+	</neighborRange>
+	<neighborRange CMD="[GetBgpRouterName @handle] ConfigRouter"
+			DISC="配置[GetBgpRouterName @handle] 路由">
+		<ARGS>
+			<BgpType CMD="-PeerTpye"
+			DISC="BGP路由种类=">[GetBgpPeerType @type]</BgpType>
+			<LOCAL_IP_ADD CMD="-TesterIp"
+			DISC="测试仪IP地址=">@localIpAddress</LOCAL_IP_ADD>
+			<LOCAL_AS_NUM CMD="-TesterAs"
+			DISC="Tester的AS号=">@localAsNumber</LOCAL_AS_NUM>
+			<DUT_IP_ADD CMD="-SutIp"
+			DISC="被测设备的IP地址=">@dutIpAddress</DUT_IP_ADD>
+			<DUT_AS_NUM CMD="-SutAs"
+			CONDITION="@type internal"
+			DISC="被测设备的AS号=">@localAsNumber</DUT_AS_NUM>
+			<Flag_MD5 CMD="-FlagMd5"
+			CONDITION="@authentication md5"
+			DISC="是否MD5论证=">[GetFlagMd5 @authentication]</Flag_MD5>
+			<Md5_Value CMD="-Md5"
+			CONDITION="@authentication md5"
+			DISC="Md5值=">@md5Key</Md5_Value>
+			<Hold_Timer CMD="-HoldTimer"
+			DISC="BGP邻居的保持时间=">@holdTimer</Hold_Timer>
+			<Keep_Alive_Timer CMD="-KeepaliveTimer"
+			DISC="发送Keepalive消息的时间间隔=">@updateInterval</Keep_Alive_Timer>
+			<Active CMD="-Active"
+			DISC="是否激活该邻居会话=">[GetActiveStatus @enabled]</Active>
+		</ARGS>
+	</neighborRange>
+	<routeRange CMD="[GetBgpRouterName_2 @handle] CreateRouteBlock"
+				FILTER="enableCommunity"
+			DISC="创建路由块在 [GetBgpRouterName_2 @handle] 下">
+		<ARGS>
+			<Name CMD="-BlockName"
+			DISC="BGP地址池的名称标识=">[GetRouteBlockName @handle]</Name>
+			<Type CMD="-AddressFamily"
+			DISC="IP地址类型=">[GetAddressFamily @ipType]</Type>
+			<First_Route CMD="-FirstRoute"
+			DISC="RouteBlock的起始地址=">@networkAddress</First_Route>
+			<Prefix_Len CMD="-PrefixLen"
+			DISC="RouteBlock的前缀长度=">@fromPrefix</Prefix_Len>
+			<Route_Number CMD="-RouteNum"
+			DISC="RouteBlock的条目数量=">@numRoutes</Route_Number>
+			<Step CMD="-Modifier"
+			DISC="RouteBlock的变化步长=">@iterationStep</Step>
+			<AS_Path CMD="-AS_PATH"
+			CONDITION="@enableAsPath true"
+			DISC="AS_PATH属性=">[GetAsSegments @asSegment.asSegments]</AS_Path>
+			<Origin_Protocol CMD="-Origin"
+			CONDITION="@enableOrigin true"
+			DISC="起点协议类型=">[GetOriginProtocol @originProtocol]</Origin_Protocol>
+			<Next_Hop CMD="-NextHop"
+			CONDITION="@enableNextHop true"
+			DISC="到公布目的地址的路径下一跳=">@nextHopIpAddress</Next_Hop>
+			<MED CMD="-MED"
+			CONDITION="@enableMed true"
+			DISC="MED优先级=">@med</MED>
+			<Local_Pref CMD="-Local_Pref"
+			CONDITION="@enableLocalPref true"
+			DISC="本地优先级=">@localPref</Local_Pref>
+			<Flag_Aggregator CMD="-FlagAtomicAggregate"
+			CONDITION="@enableAggregator true"
+			DISC="是否支持原子聚合=">@enableAggregator</Flag_Aggregator>
+			<Aggregator_AS CMD="-Aggregator_AS"
+			CONDITION="@enableAggregator true"
+			DISC="聚合的AS=">@aggregatorAsNum</Aggregator_AS>
+			<Aggregator_Ipaddress CMD="-Aggregator_Ipaddress"
+			CONDITION="@enableAggregator true"
+			DISC="聚合的ip地址=">@aggregatorIpAddress</Aggregator_Ipaddress>
+			<Originator_ID CMD="-Originator_Id"
+			CONDITION="@enableOriginatorId true"
+			DISC="起点值=">@originatorId</Originator_ID>
+			<Cluster_List CMD="-Cluster_List"
+			CONDITION="@enableCluster true"
+			DISC="路由经过反射器簇ID的序号=">[GetClusterList @cluster.val]</Cluster_List>
+			<Communities CMD="-Communities"
+			CONDITION="@enableCommunity true"
+			DISC="团体属性=">@community.val</Communities>
+			<Flag_Advertise CMD="-FlagAdvertise"
+			DISC="是否通告本地地址池=">@enabled</Flag_Advertise>
+			<Flag_Flap CMD="-FlagFlap"
+			CONDITION="@flapping.enabled true"
+			DISC="是否支持震荡功能=">@flapping.enabled</Flag_Flap>
+		</ARGS>
+	</routeRange>
+	<routeRange CMD="[GetBgpRouterName_2 @handle] AdvertiseRouteBlock"
+			FILTER="enableCommunity"
+			CONDITION="@enabled true"
+			DISC="[GetBgpRouterName_2 @handle] 下通告路由块">
+		<ARGS>
+			<Name CMD="-BlockName"
+			DISC="BGP地址池的名称标识=">[GetRouteBlockName @handle]</Name>
+		</ARGS>
+	</routeRange>
+	
+	<router CMD="$[GetRouterVport @handle] CreateRouter"
+			FILTER="psnpInterval"
+			DISC="创建路由在[GetRouterVport @handle] 下">
+		<ARGS>
+			<Name CMD="-RouterName"
+			DISC="路由名称=">[GetIsisRouterName @handle]</Name>
+			<Type CMD="-RouterType"
+			DISC="路由类型=">IsisRouter</Type>
+			<Router_Id CMD="-routerid"
+			CONDITION="@teEnable true"
+			DISC="流量工程routerID=">@teRouterId</Router_Id>
+		</ARGS>
+	</router>
+	<router CMD="[GetIsisRouterName @handle] ConfigRouter"
+			FILTER="psnpInterval"
+			DISC="配置[GetIsisRouterName @handle] 路由">
+		<ARGS>
+			<Ip_Type CMD="-AddressFamily"
+			DISC="IP地址类型=">[GetIsisAddressType @interface(enabled=true).interfaceIp]</Ip_Type>
+			<IPv4_Address CMD="-IpV4Addr"
+			DISC="IPv4地址=">[GetIsisRouterIpv4Addr @interface(enabled=true).interfaceIp]</IPv4_Address>
+			<IPv6_Address CMD="-IpV6Addr"
+			DISC="IPv6地址=">[GetIsisRouterIpv6Addr @interface(enabled=true).interfaceIp]</IPv6_Address>
+			<IPv4_Prefix_Len CMD="-IpV4PrefixLen"
+			DISC="IPv4的前缀长度=">[SubnetToPrefixlenV4 @interface(enabled=true).interfaceIpMask]</IPv4_Prefix_Len>
+			<IPv6_Prefix_Len CMD="-IpV6PrefixLen"
+			DISC="IPv6的前缀长度=">[SubnetToPrefixlenV6 @interface(enabled=true).interfaceIpMask]</IPv6_Prefix_Len>
+			<Area_Id CMD="-AreaId"
+			DISC="区域ID=">[GetAreaId @areaAddressList]</Area_Id>
+			<System_Id CMD="-SystemId"
+			DISC="系统ID=">@systemId</System_Id>
+			<Router_Id CMD="-RouterId"
+			CONDITION="@teEnable true"
+			DISC="流量工程routerID=">@teRouterId</Router_Id>
+			<Flag_Wide_Metric CMD="-FlagWideMetric"
+			CONDITION="@enableWideMetric false"
+			DISC="是否支持宽度量:">@enableWideMetric</Flag_Wide_Metric>
+			<Flag_Three-way_Handshake CMD="-FlagThree-wayHandshake"
+			CONDITION="@interface(enabled=true).enable3WayHandshake true"
+			DISC="是否支持三种方式握手:">@interface(enabled=true).enable3WayHandshake</Flag_Three-way_Handshake>
+			<Flag_Restart_Helper CMD="-FlagRestartHelper"
+			CONDITION="@restartMode helperRouter"
+			DISC="是否支持GRHelper:">@enableHitlessRestart</Flag_Restart_Helper>
+			<Flag_Drop_SutLap CMD="-FlagDropSutLap"
+			CONDITION="@enableDiscardLearnedLsps true"
+			DISC="是否丢弃所有来自SUT发来的LSP:">@enableDiscardLearnedLsps</Flag_Drop_SutLap>
+			<Flag_Multi_Top CMD="-FlagMultiTopology"
+			CONDITION="@enableMultiTopology true"
+			DISC="是否支持多拓扑:">@enableMultiTopology</Flag_Multi_Top>
+			<Hold_Time CMD="-HoldTimer"
+			CONDITION="@interface(enabled=true).enableConfiguredHoldTime true"
+			DISC="邻居保持时间=">@interface(enabled=true).configuredHoldTime</Hold_Time>
+			<Iih_Interval CMD="-IihInterval"
+			DISC="IIH的发送时间间隔=">@interface(enabled=true).level2HelloTime</Iih_Interval>
+			<Max_Packet_Size CMD="-MaxPacketSize"
+			DISC="数据包最大长度=">@lspMaxSize</Max_Packet_Size>
+			<L2_Router_Priority CMD="-L2RouterPriority"
+			CONDITION="@interface(enabled=true).networkType broadcast"
+			DISC="L2路由器的优先级=">@interface(enabled=true).priorityLevel2</L2_Router_Priority>
+			<L1_Router_Priority CMD="-L1RouterPriority"
+			CONDITION="@interface(enabled=true).networkType broadcast"
+			DISC="L1路由器的优先级=">@interface(enabled=true).priorityLevel1</L1_Router_Priority>
+			<Routing_Level CMD="-RoutingLevel"
+			DISC="路由器的层次=">[GetIsisRoutingLevel @interface(enabled=true).level]</Routing_Level>
+			<Area_Id1 CMD="-AreaId1"
+			DISC="区域ID=">[GetAreaId1 @areaAddressList]</Area_Id1>
+			<Area_Id2 CMD="-AreaId2"
+			DISC="区域ID=">[GetAreaId2 @areaAddressList]</Area_Id2>
+			<Active CMD="-Active"
+			DISC="该协议仿真功能是否生效:">[GetIsisRouterEnabled @enabled]</Active>
+			<Authentication_Type CMD="-AuthType"
+			DISC="认证类型=">[GetAuthType @interface(enabled=true).circuitAuthType @areaAuthType @domainAuthType]</Authentication_Type>
+			<Gateway_Address CMD="-GatewayAdd"
+			DISC="网关地址=">[GetGatewayAddr @interface(enabled=true).interfaceId @interface(enabled=true).interfaceIp]</Gateway_Address>
+			<Flag_TE CMD="-FlagTE"
+			CONDITION="@teEnable true"
+			DISC="是否启用流量工程:">@teEnable</Flag_TE>
+			<Metric CMD="-Metric"
+			DISC="接口的cost值=">@interface(enabled=true).metric</Metric>
+			<Circuit_Transmit_Password CMD="-AuthPassword"
+			CONDITION="@interface(enabled=true).circuitAuthType md5|password"
+			DISC="ISIS的实例中认证=">@interface(enabled=true).circuitTransmitPassword</Circuit_Transmit_Password>
+			<Iih_Auth_Password CMD="-AuthPasswordIIh"
+			CONDITION="@domainAuthType md5|password"
+			DISC="ISIS hello报文认证=">@domainTransmitPassword</Iih_Auth_Password>
+		</ARGS>
+	</router>
+	<routeRange CMD="[GetIsisRouterName_2 @handle] CreateRouterBlock"
+			FILTER="routeOrigin"
+			DISC="在[GetIsisRouterName_2 @handle] 下创建路由块">
+		<ARGS>
+			<Name CMD="-BlockName"
+			DISC="ISIS地址池的名称标识=">[GetIsisRouteBlockName @handle]</Name>
+			<Type CMD="-RoutePoolType"
+			DISC="路由地址池地址类型:">@type</Type>
+			<First_Route CMD="-FirstAddress"
+			DISC="起始地址=">@firstRoute</First_Route>
+			<Prefix_Len CMD="-PrefixLen"
+			DISC="起始地址掩码=">@maskWidth</Prefix_Len>
+			<Num CMD="-NumAddress"
+			DISC="地址数目=">@numberOfRoutes</Num>
+		</ARGS>
+	</routeRange>
+	<routeRange CMD="[GetIsisRouterName_2 @handle] AdvertiseRouteBlock"
+			FILTER="routeOrigin"
+			CONDITION="@enabled true"
+			DISC="[GetIsisRouterName_2 @handle] 下通告路由块">
+		<ARGS>
+			<Name CMD="-BlockName"
+			DISC="ISIS地址池的名称标识=">[GetIsisRouteBlockName @handle]</Name>
+		</ARGS>
+	</routeRange>
+	<networkRange CMD="[GetIsisRouterName_2 @handle] AddTopGrid"			
+			DISC="在[GetIsisRouterName_2 @handle] 下添加拓扑网络">
+		<ARGS>
+			<Name CMD="-GridName"
+			DISC="Network名称:">[GetIsisTopGridName @handle]</Name>
+			<Grid_Rows CMD="-GridRows"
+			DISC="Grid的行数=">@noOfRows</Grid_Rows>
+			<Grid_Cols CMD="-GridCols"
+			DISC="Grid的列数=">@noOfCols</Grid_Cols>
+			<Starting_Router_Id CMD="-StartingRouterId"
+			DISC="第一行第一列拓扑路由器的RouterID=">[GetStartingRouterId @interfaceIps]</Starting_Router_Id>
+			<Starting_System_Id CMD="-StartingSystemId"
+			DISC="第一行第一列拓扑路由器的SystemsID=">@routerId</Starting_System_Id>
+			<Flag_Advertisted CMD="-FlagAdvertisted"
+			DISC="是否通告该拓扑:">@enabled</Flag_Advertisted>
+			<Flag_Te CMD="-FlagTe"
+			CONDITION="@rangeTe.enableRangeTe true"
+			DISC="是否支持流量工程:">@rangeTe.enableRangeTe</Flag_Te>
+			<Address_Family CMD="-AddressFamily"
+			DISC="地址类型=">[GetTopGridAddrFamily @interfaceIps]</Address_Family>
+		</ARGS>
+	</networkRange>
+	
+	<router CMD="$[GetRouterVport @handle] CreateRouter"
+			FILTER="supportForRfc3623"
+			DISC="创建路由在[GetRouterVport @handle] 下">
+		<ARGS>
+			<Name CMD="-RouterName"
+			DISC="路由名称=">[GetOspfv2RouterName @handle]</Name>
+			<Type CMD="-RouterType"
+			DISC="路由类型=">Ospfv2Router</Type>
+			<Router_Id CMD="-routerid"
+			DISC="Tester自身的RouterID=">@routerId</Router_Id>
+		</ARGS>
+	</router>
+	<router CMD="[GetOspfv2RouterName @handle] ConfigRouter"
+			FILTER="supportForRfc3623"
+			DISC="配置[GetOspfv2RouterName @handle] 路由">
+		<ARGS>
+			<Address CMD="-IpAddr"
+			DISC="仿真的OSPF Router的接口地址=">@interface(enabled=true).interfaceIpAddress</Address>
+			<Prefix_Len CMD="-PrefixLen"
+			DISC="仿真的OSPF Router的接口地址前缀长度=">[SubnetToPrefixlenV4 @interface(enabled=true).interfaceIpMaskAddress]</Prefix_Len>
+			<Area CMD="-Area"
+			DISC="仿真的OSPF Router所在的区域号=">@interface(enabled=true).areaId</Area>
+			<Network_Type CMD="-NetworkType"
+			DISC="网络类型:">[GetOspfv2NetworkType @interface(enabled=true).networkType]</Network_Type>
+			<Hello_Interval CMD="-HelloInterval"
+			DISC="Hello报文间隔时间=">@interface(enabled=true).helloInterval</Hello_Interval>
+			<Dead_Interval CMD="-DeadInterval"
+			DISC="Ospf Dead Interval=">@interface(enabled=true).deadInterval</Dead_Interval>
+			<Fast_Hello_Interval CMD="-PollIntervall"
+			CONDITION="@enableFastHello true"
+			DISC="Ospf Polling Hello Interval=">@interface(enabled=true).helloMultiplier</Fast_Hello_Interval>
+			<Retransmit_Interval CMD="-RetransmitInterval"
+			DISC="重传间隔=">@lsaRetransmitTime</Retransmit_Interval>
+			<Max_LSAs_Per_Packet CMD="-MaxLSAsPerPacket"
+			DISC="LSU中包含的最大LSA数=">@maxFloodLsUpdatesPerBurst</Max_LSAs_Per_Packet>
+			<Metric CMD="-InterfaceCost"
+			DISC="接口cost=">@interface(enabled=true).metric</Metric>
+			<Priority CMD="-RouterPriority"
+			DISC="路由优先级=">@interface(enabled=true).priority</Priority>
+			<MTU CMD="-MTU"
+			DISC="最大传输单元=">@interface(enabled=true).mtu</MTU>
+			<Discard_Learned_LSA CMD="-FlagLSADiscardMode"
+			CONDITION="@discardLearnedLsa false"
+			DISC="LSA是否为丢弃模式:">@discardLearnedLsa</Discard_Learned_LSA>
+			<Restart_Reason CMD="-RestartReason"
+			CONDITION="@supportForRfc3623 true"
+			DISC="重启原因:">[GetResartReason @supportReasonUnknown @supportReasonSoftRestart @supportReasonSoftReloadUpgrade @supportReasonSwotchRedundantCntrlProcessor]</Restart_Reason>
+			<Active CMD="-Active"
+			DISC="该路由器是否激活:">@enabled</Active>
+			<Authentication_Type CMD="-AuthenticationType"
+			CONDITION="@interface(enabled=true).authenticationMethods password|md5"
+			DISC="验证类型=">[GetAuthenticationType @interface(enabled=true).authenticationMethods]</Authentication_Type>
+			<Password CMD="-Password"
+			CONDITION="@interface(enabled=true).authenticationMethods md5"
+			DISC="MD5认证密码=">@interface(enabled=true).md5AuthenticationKey</Password>
+			<Md5_KeyId CMD="-Md5KeyId"
+			CONDITION="@interface(enabled=true).authenticationMethods md5"
+			DISC="MD5值=">@interface(enabled=true).md5AuthenticationKeyId</Md5_KeyId>
+		</ARGS>
+	</router>
+	<routeRange CMD="[GetOspfv2RouterName_2 @handle] CreatTopExternalRouteBlock"
+			FILTER="networkNumber"
+			DISC="在[GetOspfv2RouterName_2 @handle]下创建ospf五型路由:">
+		<ARGS>
+			<Name CMD="-BlockName"
+			DISC="Block名字:">[GetOspfv2RouterBlockName @handle]</Name>
+			<Starting_Address CMD="-StartingAddress"
+			DISC="起始地址=">@networkNumber</Starting_Address>
+			<PrefixLen CMD="-PrefixLen"
+			DISC="地址掩码=">@mask</PrefixLen>
+			<Number CMD="-Number"
+			DISC="通告的地址数目=">@numberOfRoutes</Number>
+			<Modifier CMD="-Modifier"
+			DISC="变化的步长=">1</Modifier>
+			<Flag_Nssa CMD="-FlagNssa"
+			CONDITION="@origin nssa"
+			DISC="是否是nssa extern LSA:">[GetFlagNssa @origin]</Flag_Nssa>
+			<Propagate CMD="-FlagPropagate"
+			CONDITION="@propagate true"
+			DISC="7-type LSA是否转换成5-type LSA:">@propagate</Propagate>
+			<Metric CMD="-Metric"
+			DISC="消费值:">@metric</Metric>
+			<Type CMD="-Type"
+			CONDITION="@origin externalType1|externalType2"
+			DISC="类型:">[GetOspfv2RouteRangeType @origin]</Type>
+			<Active CMD="-Active"
+			DISC="是否激活:">[GetOspfv2RouteRangeActive @enabled]</Active>
+		</ARGS>
+	</routeRange>
+	<routeRange CMD="[GetOspfv2RouterName_2 @handle] AddTopRouterLink"
+			FILTER="networkNumber"
+			CONDITION="@enabled true"
+			DISC="[GetOspfv2RouterName_2 @handle] 添加拓扑路由链接">
+		<ARGS>
+			<Name CMD="-routername"
+				DISC="路由名字:">[GetOspfv2RouterName_2 @handle]</Name>
+			<Link_Name CMD="-LinkName"
+				DISC="链接名称:">[GetOspfv2LinkName @handle]</Link_Name>
+			<Link_Connected_Name CMD="-LinkConnectedName"
+				DISC="链接对象名称:">[GetOspfv2RouterBlockName @handle]</Link_Connected_Name>
+			<Link_Metric CMD="-LinkMetric"
+				DISC="链接消耗:">10</Link_Metric>
+		</ARGS>
+	</routeRange>
+	<routeRange CMD="[GetOspfv2RouterName_2 @handle] AdvertiseLinks"
+			FILTER="networkNumber"
+			CONDITION="@enabled true"
+			DISC="[GetOspfv2RouterName_2 @handle] 通告链接">
+		<ARGS>
+			<Link_Name CMD="-LinkNameList"
+				DISC="链接名称:">[GetOspfv2LinkName @handle]</Link_Name>
+		</ARGS>
+	</routeRange>
+	<interface CMD="[GetOspfv2RouterName_2 @handle] AddTopGrid"
+			FILTER="advertiseNetworkRange"
+			CONDITION="@advertiseNetworkRange true"
+			DISC="在[GetOspfv2RouterName_2 @handle] 下添加TopGrid">
+		<ARGS>
+			<Name CMD="-GridName"
+			DISC="名称:">[GetOspfv2TopGridName @handle]</Name>
+			<Starting_Router_ID CMD="-StartingRouterID"
+			DISC="起点路由ID=">[GetOspfv2TopGridStartingRID @noOfRows @noOfCols]</Starting_Router_ID>
+			<Rows CMD="-GridRows"
+			DISC="模拟OSPF Grid的行数=">@noOfRows</Rows>
+			<Columns CMD="-GridColumns"
+			DISC="模拟OSPF Grid的列数=">@noOfCols</Columns>
+			<Starting_Gmpls_Interface CMD="-StartingGmplsInterface"
+			DISC="Gmpls接口起始地址">@networkRangeIp</Starting_Gmpls_Interface>
+			<Flag_Te CMD="-FlagTe"
+			CONDITION="@networkRangeTeEnable true"
+			DISC="是否使能TE：">@networkRangeTeEnable</Flag_Te>
+			<Flag_Advertise CMD="-FlagAdvertise"
+			CONDITION="@advertiseNetworkRange false"
+			DISC="是否通告:">@advertiseNetworkRange</Flag_Advertise>
+		</ARGS>
+	</interface>
+	<router CMD="$[GetRouterVport @handle] CreateRouter"
+			FILTER="enableSupportRfc5838"
+			DISC="创建路由在[GetRouterVport @handle] 下">
+		<ARGS>
+			<Name CMD="-RouterName"
+			DISC="路由名称=">[GetOspfv3RouterName @handle]</Name>
+			<Type CMD="-RouterType"
+			DISC="路由类型=">Ospfv3Router</Type>
+			<Router_Id CMD="-routerid"
+			DISC="Tester自身的RouterID=">@routerId</Router_Id>
+		</ARGS>
+	</router>
+	<router CMD="[GetOspfv3RouterName @handle] ConfigRouter"
+			FILTER="enableSupportRfc5838"
+			DISC="配置[GetOspfv3RouterName @handle] 路由">
+		<ARGS>
+			<Address CMD="-IpAddr"
+			DISC="仿真的OSPF Router的接口地址=">[GetOspfv3IpAddr @interface(enabled=true).interfaces]</Address>
+			<Prefix_Len CMD="-PrefixLen"
+			DISC="仿真的OSPF Router的接口地址前缀长度=">[GetOspfv3IpPrefixLen @interface(enabled=true).interfaces]</Prefix_Len>
+			<Area CMD="-Area"
+			DISC="仿真的OSPF Router所在的区域号=">@interface(enabled=true).areaId</Area>
+			<Network_Type CMD="-NetworkType"
+			DISC="网络类型:">[GetOspfv3NetworkType @interface(enabled=true).interfaceType]</Network_Type>
+			<Option_Value CMD="-OptionValue"
+			DISC="Capability of the ospf router:">[GetOspfv3RouterOptions @interface(enabled=true).routerOptions]</Option_Value>
+			<Hello_Interval CMD="-HelloInterval"
+			DISC="Hello报文间隔时间=">@interface(enabled=true).helloInterval</Hello_Interval>
+			<Dead_Interval CMD="-DeadInterval"
+			DISC="Ospf Dead Interval=">@interface(enabled=true).deadInterval</Dead_Interval>
+			<Fast_Hello_Interval CMD="-PollIntervall"
+			CONDITION="@enableFastHello true"
+			DISC="Ospf Polling Hello Interval=">@interface(enabled=true).helloMultiplier</Fast_Hello_Interval>
+			<Retransmit_Interval CMD="-RetransmitInterval"
+			DISC="重传间隔=">@lsaRetransmitTime</Retransmit_Interval>
+			<Max_LSAs_Per_Packet CMD="-MaxLSAsPerPacket"
+			DISC="LSU中包含的最大LSA数=">@maxNumLsaPerSecond</Max_LSAs_Per_Packet>
+			<Metric CMD="-InterfaceCost"
+			DISC="接口cost=">@interface(enabled=true).linkMetric</Metric>
+			<Priority CMD="-RouterPriority"
+			DISC="路由优先级=">@interface(enabled=true).priority</Priority>
+			<Discard_Learned_LSA CMD="-FlagLSADiscardMode"
+			CONDITION="@discardLearnedLsa false"
+			DISC="LSA是否为丢弃模式:">@discardLearnedLsa</Discard_Learned_LSA>
+			<Instance_ID CMD="-InstanceID"
+			DISC="InstanceID=">@interface(enabled=true).instanceId</Instance_ID>
+			<Active CMD="-Active"
+			DISC="该路由器是否激活:">@enabled</Active>
+		</ARGS>
+	</router>
+	<routeRange CMD="[GetOspfv3RouterName_2 @handle] CreatTopExternalRouteBlock"
+			FILTER="addressFamily"
+			DISC="在[GetOspfv3RouterName_2 @handle]下创建ospf五型路由:">
+		<ARGS>
+			<Name CMD="-BlockName"
+			DISC="Block名字:">[GetOspfv3RouterBlockName @handle]</Name>
+			<Starting_Address CMD="-StartingAddress"
+			DISC="起始地址=">@firstRoute</Starting_Address>
+			<PrefixLen CMD="-PrefixLen"
+			DISC="地址掩码=">@mask</PrefixLen>
+			<Number CMD="-Number"
+			DISC="通告的地址数目=">@numberOfRoutes</Number>
+			<Modifier CMD="-Modifier"
+			DISC="变化的步长=">@step</Modifier>
+			<Flag_Nssa CMD="-FlagNssa"
+			CONDITION="@type sameArea"
+			DISC="是否是nssa extern LSA:">[GetFlagNssa @type]</Flag_Nssa>
+			<Metric CMD="-Metric"
+			DISC="消费值:">@metric</Metric>
+			<Type CMD="-Type"
+			CONDITION="@tpye asExternal1|asExternal2"
+			DISC="类型:">[GetOspfv3RouteRangeType @type]</Type>
+			<Active CMD="-Active"
+			DISC="是否激活:">[GetOspfv3RouteRangeActive @enabled]</Active>
+		</ARGS>
+	</routeRange>
+	<routeRange CMD="[GetOspfv3RouterName_2 @handle] AddTopRouterLink"
+			FILTER="networkNumber"
+			CONDITION="@enabled true"
+			DISC="[GetOspfv3RouterName_2 @handle] 添加拓扑路由链接">
+		<ARGS>
+			<Name CMD="-routername"
+				DISC="路由名字:">[GetOspfv3RouterName_2 @handle]</Name>
+			<Link_Name CMD="-LinkName"
+				DISC="链接名称:">[GetOspfv3LinkName @handle]</Link_Name>
+			<Link_Connected_Name CMD="-LinkConnectedName"
+				DISC="链接对象名称:">[GetOspfv3RouterBlockName @handle]</Link_Connected_Name>
+			<Link_Metric CMD="-LinkMetric"
+				DISC="链接消耗:">10</Link_Metric>
+		</ARGS>
+	</routeRange>
+	<routeRange CMD="[GetOspfv3RouterName_2 @handle] AdvertiseLinks"
+			FILTER="networkNumber"
+			CONDITION="@enabled true"
+			DISC="[GetOspfv3RouterName_2 @handle] 通告链接">
+		<ARGS>
+			<Link_Name CMD="-LinkNameList"
+				DISC="链接名称:">[GetOspfv3LinkName @handle]</Link_Name>
+		</ARGS>
+	</routeRange>
+	<netwrokRange CMD="[GetOspfv3RouterName_2 @handle] AddTopGrid"
+			FILTER="bBit"
+			DISC="在[GetOspfv3RouterName_2 @handle] 下添加TopGrid">
+		<ARGS>
+			<Name CMD="-GridName"
+			DISC="名称:">[GetOspfv3TopGridName @handle]</Name>
+			<Starting_Router_ID CMD="-StartingRouterID"
+			DISC="起点路由ID=">[GetOspfv3TopGridStartingRID @noOfRows @noOfCols]</Starting_Router_ID>
+			<Rows CMD="-GridRows"
+			DISC="模拟OSPF Grid的行数=">@noOfRows</Rows>
+			<Columns CMD="-GridColumns"
+			DISC="模拟OSPF Grid的列数=">@noOfCols</Columns>
+			<Starting_Gmpls_Interface CMD="-StartingGmplsInterface"
+			DISC="Gmpls接口起始地址">@entryAddress</Starting_Gmpls_Interface>
+			<Flag_Advertise CMD="-FlagAdvertise"
+			CONDITION="@enableAdvertiseNetworkRange false"
+			DISC="是否通告:">@enableAdvertiseNetworkRange</Flag_Advertise>
+		</ARGS>
+	</netwrokRange>
+	<dhcpRange CMD="$[GetVport @handle] CreateAccessHost"
+			CONDITION="@ipType IPv4"
+			DISC="在$[GetVport @handle]下创建AccessHost">
+		<ARGS>
+			<Name CMD="-HostName"
+				DISC="主机对象名称:">[GetAccessHostName @handle]</Name>
+			<Upper_Layer CMD="-UpperLayer"
+				DISC="上层协议类型:">@ipType</Upper_Layer>
+		</ARGS>
+	</dhcpRange>
+	<dhcpRange CMD="$[GetVport @handle] CreateRouter"
+			CONDITION="@ipType IPv4"
+			DISC="在$[GetVport @handle] 下创建路由">
+		<ARGS>
+			<Name CMD="-Name"
+				DISC="路由名称:">@name</Name>
+			<Router_Type CMD="-RouterType"
+				DISC="路由类型=">dhcpv4client</Router_Type>
+			<Active CMD="-Active"
+				DISC="是否使能仿真路由:">[GetDhcpRouterEnabled @enabled]</Active>
+			<Host_Name CMD="-HostName"
+				DISC="主机对象名称:">[GetAccessHostName @handle]</Host_Name>
+		</ARGS>
+	</dhcpRange>
+	<dhcpRange CMD="@name ConfigRouter"
+			CONDITION="@ipType IPv4"
+			DISC="配置@name 路由">
+		<ARGS>
+			<Flag_Broadcast CMD="-FlagBroadcast"
+				DISC="广播标识:">[GetDhcpFlagBroadcast @dhcp4Broadcast]</Flag_Broadcast>
+			<Num_Retry CMD="-AutoRetryNum"
+				DISC="最大尝试连接次数=">[GetDhcpNumRetry @handle]</Num_Retry>
+			<Flag_Relay_Agent_Option CMD="-FlagRelayAgentOption"
+				DISC="是否使用DHCP Relay Agent:">@useRelayAgent</Flag_Relay_Agent_Option>
+			<Circuit_ID CMD="-CircuitId"
+				CONDITION="@relayUseCircuitId true"
+				DISC="字符串标志的circuitID=">@relayCircuitId</Circuit_ID>
+			<Remote_ID CMD="-RemoteId"
+				CONDITION="@relayUseRemoteId true"
+				DISC="字符串标志的remoteID=">@relayRemoteId</Remote_ID>
+			<Link_Selection CMD="-LinkSelection"
+				CONDITION="@useRelayAgent true"
+				DISC="配置link selection子网地址:">@relayFirstAddress</Link_Selection>
+			<Setup_Timer CMD="SetupTimer"
+				DISC="发送发现报文的间隔时间=">[GetDhcpSetupTimer @handle]</Setup_Timer>
+			<Retransmit_Timer CMD="-RetransmitTimer"
+				DISC="发送重传报文时间间隔=">[GetDhcpRetransmitTimer @handle]</Retransmit_Timer>
+			<Retransmit_Num CMD="-RetransmitNum"
+				DISC="停止重传前可以尝试的次数=">[GetDhcpRetransmitNum @handle]</Retransmit_Num>
+			<Release_Timer CMD="-ReleaseTimer"
+				DISC="发送Release报文间隔时间=">[GetDhcpReleaseTimer @handle]</Release_Timer>
+			<Relay_Agent_Ip CMD="-RelayAgentIpAddr"
+				CONDITION="@FlagRelayAgentOption true"
+				DISC="Agent地址=">@relayDestination</Relay_Agent_Ip>
+			<Server_Ip CMD="-ServerIpAddr"
+				CONDITION="@FlagRelayAgentOption true"
+				DISC="DHCP server的IP地址=">@dhcp4ServerAddress</Server_Ip>
+			<Client_Local_Mac CMD="-ClientLocalMac"
+				CONDITION="@FlagRelayAgentOption true"
+				DISC="本地MAC地址=">[GetDhcpClientMac @handle]</Client_Local_Mac>
+			<Client_Local_Mac_Modifier CMD="-ClientLocalMacModifier"
+				CONDITION="@FlagRelayAgentOption true"
+				DISC="本地MAC地址变化步长=">[GetDhcpClientMacModifier @handle]</Client_Local_Mac_Modifier>
+		</ARGS>
+	</dhcpRange>
+	<dhcpRange CMD="$[GetVport @handle] CreateAccessHost"
+			CONDITION="@ipType IPv6"
+			DISC="在$[GetVport @handle]下创建AccessHost">
+		<ARGS>
+			<Name CMD="-HostName"
+				DISC="主机对象名称:">[GetAccessHostName @handle]</Name>
+			<Upper_Layer CMD="-UpperLayer"
+				DISC="上层协议类型:">@ipType</Upper_Layer>
+		</ARGS>
+	</dhcpRange>
+	<dhcpRange CMD="$[GetVport @handle] CreateRouter"
+				CONDITION="@ipType IPv6"
+				DISC="在$[GetVport @handle] 下创建路由">
+		<ARGS>
+			<Name CMD="-Name"
+				DISC="路由名称:">@name</Name>
+			<Router_Type CMD="-RouterType"
+				DISC="路由类型=">dhcpv6client</Router_Type>
+			<Active CMD="-Active"
+				DISC="是否使能仿真路由:">[GetDhcpRouterEnabled @enabled]</Active>
+			<Host_Name CMD="-HostName"
+				DISC="主机对象名称:">[GetAccessHostName @handle]</Host_Name>
+		</ARGS>
+	</dhcpRange>
+	<dhcpRange CMD="@name ConfigRouter"
+				CONDITION="@ipType IPv6"
+				DISC="配置@name 路由">
+		<ARGS>
+			<Emulation_Mode CMD="-EmulationMode"
+				DISC="模拟模式:">[GetDhcpv6EmulationMode @dhcp6IaType]</Emulation_Mode>
+			<Enable_Renew_Message CMD="-EnableRenewMessage"
+				DISC="开启信息刷新:">[GetDhcpv6RenewMessage @handle]</Enable_Renew_Message>
+			<Enable_Rebind_Message CMD="-EnableRebindMessage"
+				DISC="开启rebindMessage:">[GetDhcpv6RebindMessage @handle]</Enable_Rebind_Message>
+			<Enable_Reconfigure_Accept CMD="-EnableReconfigureAccept"
+				DISC="开启reconfigureAccept:">[GetDhcpv6ReconfigureAccept @handle]</Enable_Reconfigure_Accept>
+			<T1_Timer CMD="-T1Timer"
+				DISC="T1Timer=">@dhcp6IaT1</T1_Timer>
+			<T2_Timer CMD="-T2Timer"
+				DISC="T2Timer=">@dhcp6IaT2</T2_Timer>
+			<Rapid_Commit CMD="-RapidCommitOperationMode"
+				DISC="RapidCommitOperationMode">[GetDhcpv6RapidCommit @useRapidCommit]</Rapid_Commit>
+			<DUID_Type CMD="-DUIDType"
+				DISC="DUID类型:">[GetDhcpv6DUIDType @dhcp6DuidType]</DUID_Type>
+			<DUID_Enterprise_Num CMD="-DUIDEnterpriseNum"
+				CONDITION="@dhcp6DuidType DUID-EN"
+				DISC="DUIDEnterpriseNum=">@dhcp6DuidEnterpriseId</DUID_Enterprise_Num>
+			<DUID_Vendor_ID CMD="-DUIDStartValue"
+				CONDITION="@dhcp6DuidType DUID-EN"
+				DISC="DUIDStartValue=">@dhcp6DuidVendorId</DUID_Vendor_ID>
+			<DUID_Vendor_ID_Increment CMD="-DUIDstepValue"
+				CONDITION="@dhcp6DuidType DUID-EN"
+				DISC="DUIDstepValue=">@dhcp6DuidVendorIdIncrement</DUID_Vendor_ID_Increment>
+			<DUID_Vendor_Class_ID CMD="-DUIDCustomValue"
+				CONDITION="@useVendorClassId true"
+				DISC="DUIDCustomValue=">@vendorClassId</DUID_Vendor_Class_ID>
+			<Enable_Relay_Agent CMD="-EnableRelayAgent"
+				CONDITION="@useRelayAgent true"
+				DISC="启用relay Agent:">@useRelayAgent</Enable_Relay_Agent>
+			<Relay_Agent_Server_IP CMD="-RelayAgentServerIP"
+				CONDITION="@useRelayAgent true"
+				DISC="RelayAgent服务器地址=">@relayDestination</Relay_Agent_Server_IP>
+			<Relay_Agent_Server_IP_Step CMD="-RelayAgentServerIPStep"
+				CONDITION="@useRelayAgent true"
+				DISC="RelayAgent服务器地址步长=">@relayAddressIncrement</Relay_Agent_Server_IP_Step>
+			<Requested_Prefix CMD="-RequestedPrefixLength"
+				CONDITION="@useRelayAgent true"
+				DISC="请求地址掩码=">@relaySubnet</Requested_Prefix>
+			<Requested_Starting_Address CMD="-RequestedStartingAddr"
+				CONDITION="@useRelayAgent true"
+				DISC="请求的第一个地址=">@relayFirstAddress</Requested_Starting_Address>
+			<Enable_DAD CMD="-EnableDAD"
+				CONDITION="@dhcp6IaType IANA|IANA+IAPD"
+				DISC="启用DAD:">[GetDhcpv6DADEnabled @handle]</Enable_DAD>
+			<DAD_Transmits CMD="-DADTransmits"
+				CONDITION="@dhcp6IaType IANA|IANA+IAPD"
+				DISC="DAD时延=">[GetDhcpv6DADTransmits @handle]</DAD_Transmits>
+			<Custom_Options_Num CMD="-CustomOptionsNum"
+				DISC="客户选项数量=">[GetDhcpv6CustomOptionNum @dhcp6ParamRequestList]</Custom_Options_Num>
+			<Option_Value CMD="-OptionValue"
+				DISC="选项值=">[GetDhcpv6OptionValue @dhcp6ParamRequestList]</Option_Value>
+		</ARGS>
+	</dhcpRange>
+	<dhcpServerRange CMD="$[GetVport @handle] CreateAccessHost"
+			CONDITION="@ipType IPv4"
+			DISC="在$[GetVport @handle]下创建AccessHost">
+		<ARGS>
+			<Name CMD="-HostName"
+				DISC="主机对象名称:">[GetAccessHostName @handle]</Name>
+			<Upper_Layer CMD="-UpperLayer"
+				DISC="上层协议类型:">@ipType</Upper_Layer>
+		</ARGS>
+	</dhcpServerRange>
+	<dhcpServerRange CMD="$[GetVport @handle] CreateRouter"
+				CONDITION="@ipType IPv4"
+				DISC="在$[GetVport @handle] 下创建路由">
+		<ARGS>
+			<Name CMD="-Name"
+				DISC="路由名称:">@name</Name>
+			<Router_Type CMD="-RouterType"
+				DISC="路由类型=">dhcpv4server</Router_Type>
+			<Active CMD="-Active"
+				DISC="是否使能仿真路由:">[GetDhcpRouterEnabled @enabled]</Active>
+			<Host_Name CMD="-HostName"
+				DISC="主机对象名称:">[GetAccessHostName @handle]</Host_Name>
+		</ARGS>
+	</dhcpServerRange>
+	<dhcpServerRange CMD="@name ConfigRouter"
+				CONDITION="@ipType IPv4"
+				DISC="配置@name 路由">
+		<ARGS>
+			<Active CMD="-Active"
+				DISC="使能该仿真功能与否:">[GetDhcpv4ServerActive @enabled]</Active>
+			<Lease_Time CMD="-Lease_Time"
+				DISC="租用时间=">[GetDhcpv6ServerLeaseTime @handle]</Lease_Time>
+			<Pool_Start CMD="-PoolStart"
+				DISC="地址池开始地址=">@ipAddress</Pool_Start>
+			<Pool_Num CMD="-PoolNum"
+				DISC="地址池的数量=">@count</Pool_Num>
+			<Pool_Modifier CMD="-PoolModifier"
+				DISC="地址池中变化步长=">@ipAddressIncrement</Pool_Modifier>
+		</ARGS>
+	</dhcpServerRange>
+	<dhcpServerRange CMD="$[GetVport @handle] CreateAccessHost"
+			CONDITION="@ipType IPv6"
+			DISC="在$[GetVport @handle]下创建AccessHost">
+		<ARGS>
+			<Name CMD="-HostName"
+				DISC="主机对象名称:">[GetAccessHostName @handle]</Name>
+			<Upper_Layer CMD="-UpperLayer"
+				DISC="上层协议类型:">@ipType</Upper_Layer>
+		</ARGS>
+	</dhcpServerRange>
+	<dhcpServerRange CMD="$[GetVport @handle] CreateRouter"
+				CONDITION="@ipType IPv6"
+				DISC="在$[GetVport @handle] 下创建路由">
+		<ARGS>
+			<Name CMD="-Name"
+				DISC="路由名称:">@name</Name>
+			<Router_Type CMD="-RouterType"
+				DISC="路由类型=">dhcpv6server</Router_Type>
+			<Active CMD="-Active"
+				DISC="是否使能仿真路由:">[GetDhcpRouterEnabled @enabled]</Active>
+			<Host_Name CMD="-HostName"
+				DISC="主机对象名称:">[GetAccessHostName @handle]</Host_Name>
+		</ARGS>
+	</dhcpServerRange>
+	<dhcpServerRange CMD="@name ConfigRouter"
+				CONDITION="@ipType IPv6"
+				DISC="配置@name 路由">
+		<ARGS>
+			<Emulation_Mode CMD="-EmulationMode"
+				DISC="模拟模式:">[GetDhcpv6EmulationMode @dhcp6IaType]</Emulation_Mode>
+			<Prefix_Pool_Prefix_Len CMD="-PrefixPoolPrefixLen"
+				CONDITION="@dhcp6IaType IAPD|IANA+IAPD"
+				DISC="掩码池长度=">@prefixLength</Prefix_Pool_Prefix_Len>
+			<Prefix_Pool_Size CMD="-PrefixPoolsPerServer"
+				CONDITION="@dhcp6IaType IAPD|IANA+IAPD"
+				DISC="掩码池数量=">@prefixCount</Prefix_Pool_Size>
+			<Prefix_Pools_Start CMD="-PrefixPoolStart"
+				CONDITION="@dhcp6IaType IAPD|IANA+IAPD"
+				DISC="首掩码=">@ipAddressPrefix</Prefix_Pools_Start>
+			<Prefix_Pool_Step CMD="-PrefixPoolStep"
+				CONDITION="@dhcp6IaType IAPD|IANA+IAPD"
+				DISC="掩码池步长=">@ipAddressPrefixIncrement</Prefix_Pool_Step>
+			<Prefix_Pool_Step_Per_Server CMD="-PrefixPoolStepPerServer"
+				CONDITION="@dhcp6IaType IAPD|IANA+IAPD"
+				DISC="掩码池步长/服务器=">@ipAddressPrefixPoolIncrement</Prefix_Pool_Step_Per_Server>
+			<Addr_Pool_Pre_Length CMD="-AddrPoolPreLength"
+				CONDITION="@dhcp6IaType IANA|IANA+IAPD"
+				DISC="地址池掩码长度=">@ipPrefix</Addr_Pool_Pre_Length>
+			<Addr_Pool_Size CMD="-AddrPoolAddrPerServer"
+				CONDITION="@dhcp6IaType IANA|IANA+IAPD"
+				DISC="地址池容量=">@count</Addr_Pool_Size>
+			<Addr_Pool_Start_Addr CMD="-AddrPoolStartAddr"
+				CONDITION="@dhcp6IaType IANA|IANA+IAPD"
+				DISC="地址池首地址=">@ipAddress</Addr_Pool_Start_Addr>
+			<Addr_Pool_Step_Server CMD="-AddrPoolStepServer"
+				CONDITION="@dhcp6IaType IANA|IANA+IAPD"
+				DISC="地址池步长=">@ipAddressPoolIncrement</Addr_Pool_Step_Server>
+			<Addr_Pool_Host_Step CMD="-AddrPoolHostStep"
+				CONDITION="@dhcp6IaType IANA|IANA+IAPD"
+				DISC="地址池步长/主机">@ipAddressPoolIncrement</Addr_Pool_Host_Step>
+		</ARGS>
+	</dhcpServerRange>
+	<pppoxRange CMD="$[GetVport @handle] CreateAccessHost"
+			DISC="在$[GetVport @handle]下创建AccessHost">
+		<ARGS>
+			<Name CMD="-HostName"
+				DISC="主机对象名称:">[GetAccessHostName @handle]</Name>
+			<Active CMD="-Active"
+				DISC="使能该仿真功能与否:">[GetPPPoERouterEnabled @enabled]</Active>
+		</ARGS>
+	</pppoxRange>
+	<pppoxRange CMD="$[GetVport @handle] CreateRouter"
+			CONDITION="@parent.parent.parent.parent.pppoxOptions.role client"
+			DISC="在$[GetVport @handle]下创建路由">
+				<!-- pppoxRange->range->pppoxEndpoint->ethernet->protoclStack -->
+		<ARGS>
+			<Name CMD="-RouterName"
+				DISC="路由名称=">@name</Name>
+			<Router_Type CMD="-RouterType"
+				DISC="路由类型:">PPPoEClient</Router_Type>
+			<Host CMD="-HostName"
+				DISC="主机对象名称:">[GetAccessHostName @handle]</Host>
+		</ARGS>
+	</pppoxRange>
+	<pppoxRange CMD="@name ConfigRouter"
+				CONDITION="@parent.parent.parent.parent.pppoxOptions.role client"
+				DISC="配置@name路由">
+					<!-- pppoxRange->range->pppoxEndpoint->ethernet->protoclStack -->
+		<ARGS>
+			<Flag_Unlimit_Connect_Count CMD="-FlagUnlimitConnectCount"
+				DISC="是否使能不限制尝试连接次数:">@unlimitedRedialAttempts</Flag_Unlimit_Connect_Count>
+			<Max_Connect_Count CMD="-MaxConnectCount"
+				DISC="最大连接次数=">@redialMax</Max_Connect_Count>
+			<Connect_Rate CMD="-ConnectRate"
+				DISC="连接速率=">[GetPPPoEConnectRate @handle]</Connect_Rate>
+			<Disconnect_Rate CMD="-DisconnectRate"
+				DISC="断开连接速率=">[GetPPPoEDisconnectRate @handle]</Disconnect_Rate>
+			<Outstanding CMD="-SessionOpenWindow"
+				DISC="最大等待连接数=">[GetPPPoEOutstanding @handle]</Outstanding>
+			<Flag_PPPAgent_Circuit_Id CMD="-FlagPPPAgentCircuitId"
+				CONDITION="@clientSignalLoopId true"
+				DISC="启用PPPAgent Circuit Id:">@clientSignalLoopId</Flag_PPPAgent_Circuit_Id>
+			<Agent_Circuit_Id CMD="-AgentCircuitId"
+				CONDITION="@clientSignalLoopId true"
+				DISC="AgentCircuitId=">@agentCircuitId</Agent_Circuit_Id>
+			<Flag_PPPAgent_Remote_Id CMD="-FlagPPPAgentRemoteId"
+				CONDITION="@clientSignalLoopId true"
+				DISC="启用PPPAgent Remote Id:">@clientSignalLoopId</Flag_PPPAgent_Remote_Id>
+			<Remote_Id CMD="-RemoteAgentCircuitId"
+				CONDITION="@clientSignalLoopId true"
+				DISC="远程AgentCircuitId=">@agentRemoteId</Remote_Id>
+			<Flag_PPPAccess_Loop_Encaps CMD="-FlagPPPAccessLoopEncaps"
+				CONDITION="@clientSignalLoopEncapsulation ture"
+				DISC="是否启用PPPAccessLoopEncapsulation:">@clientSignalLoopEncapsulation</Flag_PPPAccess_Loop_Encaps>
+			<Data_Link CMD="-DataLink"
+				CONDITION="@clientSignalLoopEncapsulation ture"
+				DISC="数据连接:">@dataLink</Data_Link>
+			<Encapsulation1 CMD="-Encapsulation1"
+				CONDITION="@clientSignalLoopEncapsulation ture"
+				DISC="Encapsulation1:">[GetPPPoEEncapsulation @encaps1]</Encapsulation1>
+			<Encapsulation2 CMD="-Encapsulation2"
+				CONDITION="@clientSignalLoopEncapsulation ture"
+				DISC="Encapsulation2:">[GetPPPoEEncapsulation @encaps2]</Encapsulation2>
+			<Flag_LCP_Generate_Keepalives CMD="-FlagLCPGenerateKeepalives"
+				CONDITION="@enableEchoReq true"
+				DISC="是否启用LCP保活:">@enableEchoReq</Flag_LCP_Generate_Keepalives>
+			<Keepalive_Interval CMD="-KeepaliveInterval"
+				CONDITION="@enableEchoReq true"
+				DISC="保活间隔=">@echoReqInterval</Keepalive_Interval>
+			<Flag_Use_Interface_MRU CMD="-FlagUseInterfaceMRU"
+				CONDITION="@enableMru true"
+				DISC="是否启用接口MRU:">@enableMru</Flag_Use_Interface_MRU>
+			<MRU CMD="-MRU"
+				CONDITION="@enableMru true"
+				DISC="MRU=">@mtu</MRU>
+			<Flag_Enable_IPCP CMD="-FlagEnableIPCP"
+				CONDITION="@serverDnsOptions supplyAddress|supplyAddresses"
+				DISC="是否使能IPCP:">[GetIPCPEnabled @serverDnsOptions]</Flag_Enable_IPCP>
+			<Advertised_IP CMD="-AdvertisedIPAddress"
+				CONDITION="@serverDnsOptions supplyAddress|supplyAddresses"
+				DISC="通告的IP地址=">@serverPrimaryDnsAddress</Advertised_IP>
+			<Authentication_Type CMD="-AuthenticationRole"
+				CONDITION="@authType pap|chap|papOrChap"
+				DISC="认证类型=">[GetPPPoEAuthType @authType]</Authentication_Type>
+			<Authentication_Restart_Interval CMD="-AuthenticationRestartInterval"
+				CONDITION="@authType pap|chap|papOrChap"
+				DISC="认证重启时间间隔=">@authTimeout</Authentication_Restart_Interval>
+			<Authentication_Max_Attempts CMD="-AuthenticationMaxAttempts"
+				CONDITION="@authType pap|chap|papOrChap"
+				DISC="认证重试次数=">@authRetries</Authentication_Max_Attempts>
+			<Username CMD="-Username"
+				CONDITION="@authType pap|chap|papOrChap"
+				DISC="用户名:">@papUser</Username>
+			<Password CMD="-Password"
+				CONDITION="@authType pap|chap|papOrChap"
+				DISC="密码=">@papPassword</Password>
+		</ARGS>
+	</pppoxRange>
+	<pppoxRange CMD="$[GetVport @handle] CreateRouter"
+			CONDITION="@parent.parent.parent.parent.pppoxOptions.role server"
+			DISC="在$[GetVport @handle]下创建路由">
+				<!-- pppoxRange->range->pppoxEndpoint->ethernet->protoclStack -->
+		<ARGS>
+			<Name CMD="-RouterName"
+				DISC="路由名称=">@name</Name>
+			<Router_Type CMD="-RouterType"
+				DISC="路由类型:">PPPoEServer</Router_Type>
+			<Host CMD="-HostName"
+				DISC="主机对象名称:">[GetAccessHostName @handle]</Host>
+			<Active CMD="-Active"
+				DISC="是否使能该路由:">[GetPPPoERouterEnabled @enabled]</Active>
+		</ARGS>
+	</pppoxRange>
+	<pppoxRange CMD="@name ConfigRouter"
+				CONDITION="@parent.parent.parent.parent.pppoxOptions.role server"
+				DISC="配置@name路由">
+					<!-- pppoxRange->range->pppoxEndpoint->ethernet->protoclStack -->
+		<ARGS>
+			<PPPoE_Service_Name CMD="-PPPoEServiceName"
+				DISC="Service的名字:">@serviceName</PPPoE_Service_Name>
+			<AC_Name CMD="-ACName"
+				DISC="Access Concentrator Unit的名字:">@acName</AC_Name>
+			<Source_Mac_Addr CMD="-SourceMacAddr"
+				DISC="Pool中使用的起始的MAC地址=">[GetSourceMacAddr @parent]</Source_Mac_Addr>
+			<Pool_Name CMD="-PoolName"
+				DISC="Pool的名称:">[GetPoolName @parent]</Pool_Name>
+			<MRU CMD="-MRU"
+				CONDITION="@enableMru true"
+				DISC="MRU=">@mtu</MRU>
+			<Echo_Request_Timer CMD="-EchoRequestTimer"
+				CONDITION="@enableEchoReq true"
+				DISC="保活间隔=">@echoReqInterval</Echo_Request_Timer>
+			<Max_Config_Count CMD="-MaxConfigCount"
+				DISC="发送config-request报文的最大次数=">@lcpRetries</Max_Config_Count>
+			<Restart_Timer CMD="-RestartTimer"
+				DISC="重新发送config-request报文前的等待时间=">@lcpTimeout</Restart_Timer>
+			<Authentication_Role CMD="-AuthenticationRole"
+				DISC="论证的类型=">[GetAuthenticationRole @authType]</Authentication_Role>
+			<Authen_Username CMD="-AuthenUsername"
+				CONDITION="@authType pap"
+				DISC="论证的用户名=">@papUser</Authen_Username>
+			<Authen_Password CMD="-AuthenPassword"
+				CONDITION="@authType pap"
+				DISC="论证的密码=">@papPassword</Authen_Password>
+			<Authen_Username CMD="-AuthenUsername"
+				CONDITION="@authType chap"
+				DISC="论证的用户名=">@chapName</Authen_Username>
+			<Authen_Password CMD="-AuthenPassword"
+				CONDITION="@authType chap"
+				DISC="论证的密码=">@chapSecret</Authen_Password>
+		</ARGS>
+	</pppoxRange>
+	<traffic CMD="$chassis StartTraffic"
+			DISC="启动所有流量">
+	</traffic>
+	<traffic CMD="after 10000"
+			DISC="等待10秒钟">
+	</traffic>
+	<traffic CMD="$chassis StopTraffic"
+			DISC="停止所有流量">
+	</traffic>
+	<vport CMD="set stats_txFrame.@name {}"></vport>
+	<vport CMD="set stats_rxFrame.@name {}"></vport>
+	<vport CMD="stats.@name GetPortStats"
+			DISC="获取端口@name 统计值:">
+		<ARGS>
+			<Tx CMD="-TxFrames"
+				DISC="发送报文变量=">stats_txFrame.@name</Tx>
+			<Rx CMD="-RxFrames"
+				DISC="接收报文变量=">stats_rxFrame.@name</Rx>
+		</ARGS>
+	</vport>	
+</BitXml>
+
+
+
